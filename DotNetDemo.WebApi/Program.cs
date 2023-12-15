@@ -1,7 +1,7 @@
+using DotNetDemo.WebApi.Config;
 using DotNetDemo.WebApi.DAO;
 using DotNetDemo.WebApi.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Claims;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -16,7 +16,6 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 //{   //解决乱码问题
 //    options.JsonSerializerOptions.Encoder = JavaScriptEncoder.Create(UnicodeRanges.All);
 //});
-
 builder.Services.AddControllers();
 //注入mysql ef上下文
 builder.Services.AddDbContext<MysqlEfContext>(p =>
@@ -28,25 +27,11 @@ builder.Services.AddDbContext<TodoContext>(p =>
 {
     p.UseInMemoryDatabase("TodoList");
 });
-
-
-
-//builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
-builder.Services.AddAuthentication();
-builder.Services.AddAuthentication("Bearer").AddJwtBearer();
+builder.Services.AddSwaggerConfig(builder.Configuration);
 WebApplication app = builder.Build();
-
-app.UseSwagger();
-app.UseSwaggerUI();
-
-app.UseHttpsRedirection();
 app.UseHttpsRedirection();
 
-app.MapSwagger().RequireAuthorization();
-
-app.MapGet("/secret", (ClaimsPrincipal user) => $"Hello {user.Identity?.Name}. My secret").RequireAuthorization();
+app.UseSwaggerConfig();
 
 app.MapControllers();
 app.Run();
