@@ -36,7 +36,7 @@ namespace DotNetDemo.WebApi.Controllers
         public string test()
         {
 
-            return "hello jwt";
+            return "你好";
         }
 
     }
